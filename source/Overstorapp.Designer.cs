@@ -35,9 +35,9 @@
             this.bindingNavigatorAddNewItem = new System.Windows.Forms.ToolStripButton();
             this.bindingNavigatorCountItem = new System.Windows.Forms.ToolStripLabel();
             this.bindingNavigatorDeleteItem = new System.Windows.Forms.ToolStripButton();
-            this.btn_new = new System.Windows.Forms.ToolStripButton();
-            this.btn_exp = new System.Windows.Forms.ToolStripButton();
-            this.btn_imp = new System.Windows.Forms.ToolStripButton();
+            this.btn_create = new System.Windows.Forms.ToolStripButton();
+            this.btn_save = new System.Windows.Forms.ToolStripButton();
+            this.btn_ins = new System.Windows.Forms.ToolStripButton();
             this.btn_settings = new System.Windows.Forms.ToolStripButton();
             this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
             this.bindingNavigatorMoveFirstItem = new System.Windows.Forms.ToolStripButton();
@@ -52,8 +52,8 @@
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.cmb_tag = new System.Windows.Forms.ToolStripComboBox();
             this.btn_search = new System.Windows.Forms.ToolStripButton();
-            this.bindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.tb_search = new System.Windows.Forms.TextBox();
+            this.bindingSource = new System.Windows.Forms.BindingSource(this.components);
             ((System.ComponentModel.ISupportInitialize)(this.dataView)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.bindingNavigator1)).BeginInit();
             this.bindingNavigator1.SuspendLayout();
@@ -76,6 +76,7 @@
             this.dataView.TabIndex = 0;
             this.dataView.DataSourceChanged += new System.EventHandler(this.dataView_DataSourceChanged);
             this.dataView.ColumnAdded += new System.Windows.Forms.DataGridViewColumnEventHandler(this.dataView_ColumnAdded);
+            this.dataView.RowsAdded += new System.Windows.Forms.DataGridViewRowsAddedEventHandler(this.dataView_RowsAdded);
             // 
             // bindingNavigator1
             // 
@@ -83,9 +84,9 @@
             this.bindingNavigator1.CountItem = this.bindingNavigatorCountItem;
             this.bindingNavigator1.DeleteItem = this.bindingNavigatorDeleteItem;
             this.bindingNavigator1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.btn_new,
-            this.btn_exp,
-            this.btn_imp,
+            this.btn_create,
+            this.btn_save,
+            this.btn_ins,
             this.btn_settings,
             this.toolStripSeparator2,
             this.bindingNavigatorMoveFirstItem,
@@ -139,38 +140,38 @@
             this.bindingNavigatorDeleteItem.Size = new System.Drawing.Size(23, 22);
             this.bindingNavigatorDeleteItem.Text = "Удалить";
             // 
-            // btn_new
+            // btn_create
             // 
-            this.btn_new.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.btn_new.Image = ((System.Drawing.Image)(resources.GetObject("btn_new.Image")));
-            this.btn_new.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.btn_new.Name = "btn_new";
-            this.btn_new.Size = new System.Drawing.Size(23, 22);
-            this.btn_new.Text = "Создать";
-            this.btn_new.Click += new System.EventHandler(this.btn_new_Click);
+            this.btn_create.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.btn_create.Image = ((System.Drawing.Image)(resources.GetObject("btn_create.Image")));
+            this.btn_create.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.btn_create.Name = "btn_create";
+            this.btn_create.Size = new System.Drawing.Size(23, 22);
+            this.btn_create.Text = "Create";
+            this.btn_create.Click += new System.EventHandler(this.btn_new_Click);
             // 
-            // btn_exp
+            // btn_save
             // 
-            this.btn_exp.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.btn_exp.Enabled = false;
-            this.btn_exp.Image = ((System.Drawing.Image)(resources.GetObject("btn_exp.Image")));
-            this.btn_exp.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.btn_exp.Name = "btn_exp";
-            this.btn_exp.RightToLeftAutoMirrorImage = true;
-            this.btn_exp.Size = new System.Drawing.Size(23, 22);
-            this.btn_exp.Text = "Экспорт";
-            this.btn_exp.Click += new System.EventHandler(this.btn_exp_Click);
+            this.btn_save.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.btn_save.Enabled = false;
+            this.btn_save.Image = ((System.Drawing.Image)(resources.GetObject("btn_save.Image")));
+            this.btn_save.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.btn_save.Name = "btn_save";
+            this.btn_save.RightToLeftAutoMirrorImage = true;
+            this.btn_save.Size = new System.Drawing.Size(23, 22);
+            this.btn_save.Text = "Save";
+            this.btn_save.Click += new System.EventHandler(this.btn_exp_Click);
             // 
-            // btn_imp
+            // btn_ins
             // 
-            this.btn_imp.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.btn_imp.Image = ((System.Drawing.Image)(resources.GetObject("btn_imp.Image")));
-            this.btn_imp.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.btn_imp.Name = "btn_imp";
-            this.btn_imp.RightToLeftAutoMirrorImage = true;
-            this.btn_imp.Size = new System.Drawing.Size(23, 22);
-            this.btn_imp.Text = "Импорт";
-            this.btn_imp.Click += new System.EventHandler(this.btn_imp_Click);
+            this.btn_ins.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.btn_ins.Image = ((System.Drawing.Image)(resources.GetObject("btn_ins.Image")));
+            this.btn_ins.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.btn_ins.Name = "btn_ins";
+            this.btn_ins.RightToLeftAutoMirrorImage = true;
+            this.btn_ins.Size = new System.Drawing.Size(23, 22);
+            this.btn_ins.Text = "Insert";
+            this.btn_ins.Click += new System.EventHandler(this.btn_imp_Click);
             // 
             // btn_settings
             // 
@@ -179,7 +180,8 @@
             this.btn_settings.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.btn_settings.Name = "btn_settings";
             this.btn_settings.Size = new System.Drawing.Size(23, 22);
-            this.btn_settings.Text = "Настройка";
+            this.btn_settings.Text = "Settings";
+            this.btn_settings.Click += new System.EventHandler(this.btn_settings_Click);
             // 
             // toolStripSeparator2
             // 
@@ -279,10 +281,6 @@
             this.btn_search.Text = "toolStripButton1";
             this.btn_search.Click += new System.EventHandler(this.btn_search_Click);
             // 
-            // bindingSource
-            // 
-            this.bindingSource.AddingNew += new System.ComponentModel.AddingNewEventHandler(this.bindingSource1_AddingNew);
-            // 
             // tb_search
             // 
             this.tb_search.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
@@ -300,6 +298,7 @@
             this.Controls.Add(this.tb_search);
             this.Controls.Add(this.dataView);
             this.Controls.Add(this.bindingNavigator1);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "Overstorapp";
             this.Text = "Overstor";
             ((System.ComponentModel.ISupportInitialize)(this.dataView)).EndInit();
@@ -328,15 +327,15 @@
         private System.Windows.Forms.ToolStripButton bindingNavigatorMoveLastItem;
         private System.Windows.Forms.ToolStripSeparator bindingNavigatorSeparator2;
         private System.Windows.Forms.BindingSource bindingSource;
-        private System.Windows.Forms.ToolStripButton btn_imp;
-        private System.Windows.Forms.ToolStripButton btn_exp;
+        private System.Windows.Forms.ToolStripButton btn_ins;
+        private System.Windows.Forms.ToolStripButton btn_save;
         private System.Windows.Forms.ToolStripButton btn_refresh;
         private System.Windows.Forms.TextBox tb_search;
         private System.Windows.Forms.ToolStripComboBox cmb_tag;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
         private System.Windows.Forms.ToolStripButton btn_search;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
-        private System.Windows.Forms.ToolStripButton btn_new;
+        private System.Windows.Forms.ToolStripButton btn_create;
         private System.Windows.Forms.ToolStripButton btn_settings;
     }
 }

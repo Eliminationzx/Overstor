@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(CreatedbDialog));
             this.cols_del = new System.Windows.Forms.Button();
             this.cols_add = new System.Windows.Forms.Button();
             this.label2 = new System.Windows.Forms.Label();
@@ -41,21 +42,25 @@
             // 
             // cols_del
             // 
+            this.cols_del.Image = ((System.Drawing.Image)(resources.GetObject("cols_del.Image")));
             this.cols_del.Location = new System.Drawing.Point(271, 45);
             this.cols_del.Name = "cols_del";
             this.cols_del.Size = new System.Drawing.Size(71, 27);
             this.cols_del.TabIndex = 15;
             this.cols_del.Text = "Delete";
+            this.cols_del.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
             this.cols_del.UseVisualStyleBackColor = true;
             this.cols_del.Click += new System.EventHandler(this.cols_del_Click);
             // 
             // cols_add
             // 
+            this.cols_add.Image = ((System.Drawing.Image)(resources.GetObject("cols_add.Image")));
             this.cols_add.Location = new System.Drawing.Point(194, 45);
             this.cols_add.Name = "cols_add";
             this.cols_add.Size = new System.Drawing.Size(71, 27);
             this.cols_add.TabIndex = 14;
             this.cols_add.Text = "Add";
+            this.cols_add.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
             this.cols_add.UseVisualStyleBackColor = true;
             this.cols_add.Click += new System.EventHandler(this.cols_add_Click);
             // 
@@ -134,6 +139,7 @@
             this.Controls.Add(this.cols_list);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.tb_table_name);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "CreatedbDialog";
             this.Text = "Create database";
             this.ResumeLayout(false);

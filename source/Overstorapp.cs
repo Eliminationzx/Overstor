@@ -15,8 +15,8 @@ namespace Overstor
 {
     public partial class Overstorapp : Form
     {
+        private Process trigger;
         private DataBase db;
-        private Process ind_proc;
         
         public Overstorapp()
         {
@@ -27,20 +27,15 @@ namespace Overstor
         private void InitializeExtentions()
         {
             db = new DataBase();
-        }
 
-        private void bindingSource1_AddingNew(object sender, AddingNewEventArgs e)
-        {
-            /*if (String.IsNullOrEmpty(tb_ind_path.Text) || ind_proc == null)
-                return;
-
-            ind_proc.StandardInput.WriteLine("-e");*/
         }
 
         private void btn_imp_Click(object sender, EventArgs e)
         {
             using (OpenFileDialog of_diag = new OpenFileDialog())
             {
+                of_diag.Filter = "XML files (.xml)|*.xml";
+
                 if (of_diag.ShowDialog() == DialogResult.OK)
                 {
                     // Load database
@@ -64,6 +59,8 @@ namespace Overstor
         {
             using (SaveFileDialog sf_diag = new SaveFileDialog())
             {
+                sf_diag.Filter = "XML files (.xml)|*.xml";
+
                 if (sf_diag.ShowDialog() == DialogResult.OK)
                 {
                     if (!db.SaveDB(sf_diag.FileName))
@@ -73,20 +70,6 @@ namespace Overstor
                     }
                 }
             }
-        }
-
-        private void btn_browse_Click(object sender, EventArgs e)
-        {
-            /*using (OpenFileDialog of_diag = new OpenFileDialog())
-            { 
-                if(of_diag.ShowDialog() == DialogResult.OK)
-                {
-                    tb_ind_path.Text = of_diag.FileName;
-                }
-
-                ind_proc = Process.Start(tb_ind_path.Text, null);
-                ind_proc.BeginOutputReadLine();
-            }*/
         }
 
         private void btn_refresh_Click(object sender, EventArgs e)
@@ -100,10 +83,10 @@ namespace Overstor
         private void dataView_DataSourceChanged(object sender, EventArgs e)
         {
             // Enable or disable some functionals
-            btn_exp.Enabled = db.Tables[0] != null;
-            btn_search.Enabled = db.Tables[0] != null;
-            btn_refresh.Enabled = db.Tables[0] != null;
-            btn_search.Enabled = db.Tables[0] != null;
+            btn_save.Enabled = db.Tables != null;
+            btn_search.Enabled = db.Tables != null;
+            btn_refresh.Enabled = db.Tables != null;
+            btn_search.Enabled = db.Tables != null;
         }
 
         private void btn_search_Click(object sender, EventArgs e)
@@ -175,6 +158,53 @@ namespace Overstor
                 {
                     create_table(cdb.table_name, cdb.list);
                 }
+            }
+        }
+
+        private void btn_settings_Click(object sender, EventArgs e)
+        {
+            using (SettingsDialog settings = new SettingsDialog())
+            {
+                if (settings.ShowDialog() == DialogResult.OK)
+                {
+                    init_trigger(settings.trigger_path);
+                }
+            }
+        }
+
+        private void init_trigger(string path)
+        {
+            if (String.IsNullOrWhiteSpace(path))
+            {
+                MessageBox.Show("Please fill required forms!");
+                return;
+            }
+
+            trigger = new Process
+            {
+                StartInfo =
+                {
+                    FileName = path,
+                    RedirectStandardInput = true,
+                    RedirectStandardOutput = false,
+                    RedirectStandardError = true,
+                    UseShellExecute = false
+                }
+            };
+
+            trigger.Start();
+        }
+
+        private void dataView_RowsAdded(object sender, DataGridViewRowsAddedEventArgs e)
+        {
+            try
+            {
+                Console.WriteLine("{0} is active: {1}", trigger.Id, !trigger.HasExited);
+                trigger.StandardInput.WriteLine("New event");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
             }
         }
     }
