@@ -42,6 +42,12 @@ namespace Overstor
 
         private void btn_accept_Click(object sender, EventArgs e)
         {
+            if (String.IsNullOrWhiteSpace(tb_trigger_path.Text))
+            {
+                MessageBox.Show("Please fill required forms!");
+                return;
+            }
+
             DialogResult = DialogResult.OK;
         }
     }

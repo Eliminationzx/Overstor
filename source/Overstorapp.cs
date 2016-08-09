@@ -16,6 +16,9 @@ namespace Overstor
         private int page_size;
         private int current_page_index;
         private int total_pages;
+        private SearchDialog sdiag;
+        private CreatedbDialog cdb;
+        private SettingsDialog settings;
         
         public Overstorapp()
         {
@@ -30,11 +33,32 @@ namespace Overstor
             current_page_index = 1;
             total_pages = 0;
             dataView.EditMode = DataGridViewEditMode.EditProgrammatically;
+
+            // Init other forms
+            sdiag = new SearchDialog();
+            cdb = new CreatedbDialog();
+            settings = new SettingsDialog();
         }
 
         private void CalculateTotalPages()
         {
             total_pages = Convert.ToInt32(Math.Ceiling(bind_source.Count * 1.0 / page_size));
+        }
+
+        public void SearchTagListInit()
+        {
+            // Cleanup search parameters
+            sdiag.tag_list.Items.Clear();
+
+            for (int i = 0; i < dataView.ColumnCount; i++)
+            {
+                // Set column auto size mode
+                dataView.Columns[i].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+                sdiag.tag_list.Items.Add(dataView.Columns[i].Name);
+            }
+
+            // Select first parameter by default
+            sdiag.tag_list.SelectedIndex = 0;
         }
 
         private void BindPageToGrid()
@@ -106,45 +130,17 @@ namespace Overstor
 
         private void btn_search_Click(object sender, EventArgs e)
         {
-            if (String.IsNullOrWhiteSpace(tb_search.Text))
+            if (sdiag.ShowDialog() == DialogResult.OK)
             {
-                MessageBox.Show("Please fill search form!");
-                return;
+                DataView dv = new DataView(db.Tables[0]);
+                dv.RowFilter = sdiag.filter_text;
+                bind_source.DataSource = dv;
+                BindPageToGrid();
             }
-
-            DataView dv = new DataView(db.Tables[0]);
-            string text = tb_search.Text;
-
-            dv.RowFilter = cmb_tag.SelectedItem.ToString() + "='" + text + "'";
-            bind_source.DataSource = dv;
-
-            BindPageToGrid();
-        }
-
-        private void dataView_ColumnAdded(object sender, DataGridViewColumnEventArgs e)
-        {
-            // Cleanup search parameters
-            cmb_tag.Items.Clear();
-
-            for (int i = 0; i < dataView.ColumnCount; i++)
-            {
-                // Set column auto size mode
-                dataView.Columns[i].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
-                cmb_tag.Items.Add(dataView.Columns[i].Name);
-            }
-
-            // Select first parameter by default
-            cmb_tag.SelectedIndex = 0;
         }
 
         private void TableCreate(string table_name, ListBox list)
         {
-            if (String.IsNullOrWhiteSpace(table_name) || list.Items == null)
-            {
-                MessageBox.Show("Please fill required forms!");
-                return;
-            }
-
             List<string> cols_name = new List<string>(list.Items.Count);
             for (int i = 0; i < list.Items.Count; i++)
                 cols_name.Add(list.Items[i].ToString());
@@ -166,34 +162,22 @@ namespace Overstor
 
         private void btn_new_Click(object sender, EventArgs e)
         {
-            using (CreatedbDialog cdb = new CreatedbDialog())
+            if (cdb.ShowDialog() == DialogResult.OK)
             {
-                if (cdb.ShowDialog() == DialogResult.OK)
-                {
-                    TableCreate(cdb.table_name, cdb.list);
-                }
+                TableCreate(cdb.table_name, cdb.list);
             }
         }
 
         private void btn_settings_Click(object sender, EventArgs e)
         {
-            using (SettingsDialog settings = new SettingsDialog())
+            if (settings.ShowDialog() == DialogResult.OK)
             {
-                if (settings.ShowDialog() == DialogResult.OK)
-                {
-                    TriggerInit(settings.trigger_path);
-                }
+                TriggerInit(settings.trigger_path);
             }
         }
 
         private void TriggerInit(string path)
         {
-            if (String.IsNullOrWhiteSpace(path))
-            {
-                MessageBox.Show("Please fill required forms!");
-                return;
-            }
-
             trigger = new Process
             {
                 StartInfo =
@@ -207,12 +191,6 @@ namespace Overstor
             };
 
             trigger.Start();
-        }
-
-        private void dataView_RowsAdded(object sender, DataGridViewRowsAddedEventArgs e)
-        {
-            //if (!trigger.HasExited)
-            //    trigger.StandardInput.WriteLine("New event");
         }
 
         private void btn_first_Click(object sender, EventArgs e)
@@ -258,7 +236,22 @@ namespace Overstor
             RefreshPagination();
         }
 
-        private void cmb_page_size_SelectedValueChanged(object sender, EventArgs e)
+        private void dataView_DataBindingComplete(object sender, DataGridViewBindingCompleteEventArgs e)
+        {
+            btn_save.Enabled = db.Tables[0] != null;
+            btn_search.Enabled = db.Tables[0] != null;
+            btn_refresh.Enabled = db.Tables[0] != null;
+            btn_search.Enabled = db.Tables[0] != null;
+            cmb_page_size.Enabled = db.Tables[0] != null;
+        }
+
+        private void bind_source_CurrentChanged(object sender, EventArgs e)
+        {
+            CalculateTotalPages();
+            RefreshPagination();
+        }
+
+        private void cmb_page_size_TextChanged(object sender, EventArgs e)
         {
             page_size = Convert.ToInt32(cmb_page_size.Text);
             RefreshPagination();
@@ -266,18 +259,15 @@ namespace Overstor
             BindPageToGrid();
         }
 
-        private void dataView_DataBindingComplete(object sender, DataGridViewBindingCompleteEventArgs e)
+        private void bind_source_AddingNew(object sender, AddingNewEventArgs e)
         {
-            btn_save.Enabled = db.Tables[0] != null;
-            btn_search.Enabled = db.Tables[0] != null;
-            btn_refresh.Enabled = db.Tables[0] != null;
-            btn_search.Enabled = db.Tables[0] != null;
+            BindPageToGrid();
+            //    trigger.StandardInput.WriteLine("New event");
         }
 
-        private void bind_source_CurrentChanged(object sender, EventArgs e)
+        private void dataView_ColumnAdded(object sender, DataGridViewColumnEventArgs e)
         {
-            CalculateTotalPages();
-            RefreshPagination();
+            SearchTagListInit();
         }
     }
 }
