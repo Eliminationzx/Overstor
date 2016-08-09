@@ -183,14 +183,12 @@ namespace Overstor
                 StartInfo =
                 {
                     FileName = path,
-                    RedirectStandardInput = true,
+                    RedirectStandardInput = false,
                     RedirectStandardOutput = false,
-                    RedirectStandardError = true,
+                    RedirectStandardError = false,
                     UseShellExecute = false
                 }
             };
-
-            trigger.Start();
         }
 
         private void btn_first_Click(object sender, EventArgs e)
@@ -238,6 +236,7 @@ namespace Overstor
 
         private void dataView_DataBindingComplete(object sender, DataGridViewBindingCompleteEventArgs e)
         {
+            dataView.Enabled = db.Tables[0] != null;
             btn_save.Enabled = db.Tables[0] != null;
             btn_search.Enabled = db.Tables[0] != null;
             btn_refresh.Enabled = db.Tables[0] != null;
@@ -262,12 +261,18 @@ namespace Overstor
         private void bind_source_AddingNew(object sender, AddingNewEventArgs e)
         {
             BindPageToGrid();
-            //    trigger.StandardInput.WriteLine("New event");
         }
 
         private void dataView_ColumnAdded(object sender, DataGridViewColumnEventArgs e)
         {
             SearchTagListInit();
+        }
+
+        private void bind_nav_ItemAdded(object sender, ToolStripItemEventArgs e)
+        {
+            if (trigger == null)
+                return;
+            trigger.Start();
         }
     }
 }
