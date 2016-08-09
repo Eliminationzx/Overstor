@@ -45,12 +45,12 @@
             this.btn_first = new System.Windows.Forms.ToolStripButton();
             this.bind_nav = new System.Windows.Forms.BindingNavigator(this.components);
             this.lb_pgsize = new System.Windows.Forms.ToolStripLabel();
-            this.cmb_page_size = new System.Windows.Forms.ToolStripComboBox();
             this.btn_prev = new System.Windows.Forms.ToolStripButton();
             this.lb_pages = new System.Windows.Forms.ToolStripLabel();
             this.btn_next = new System.Windows.Forms.ToolStripButton();
             this.btn_last = new System.Windows.Forms.ToolStripButton();
             this.bind_source = new System.Windows.Forms.BindingSource(this.components);
+            this.tb_page_size = new System.Windows.Forms.ToolStripTextBox();
             ((System.ComponentModel.ISupportInitialize)(this.dataView)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.bind_nav)).BeginInit();
             this.bind_nav.SuspendLayout();
@@ -203,7 +203,7 @@
             this.btn_search,
             this.toolStripSeparator3,
             this.lb_pgsize,
-            this.cmb_page_size,
+            this.tb_page_size,
             this.btn_first,
             this.btn_prev,
             this.lb_pages,
@@ -226,20 +226,6 @@
             this.lb_pgsize.Name = "lb_pgsize";
             this.lb_pgsize.Size = new System.Drawing.Size(58, 22);
             this.lb_pgsize.Text = "Page size:";
-            // 
-            // cmb_page_size
-            // 
-            this.cmb_page_size.Enabled = false;
-            this.cmb_page_size.Items.AddRange(new object[] {
-            "5",
-            "10",
-            "25",
-            "50",
-            "100"});
-            this.cmb_page_size.Name = "cmb_page_size";
-            this.cmb_page_size.Size = new System.Drawing.Size(75, 25);
-            this.cmb_page_size.Text = "10";
-            this.cmb_page_size.TextChanged += new System.EventHandler(this.cmb_page_size_TextChanged);
             // 
             // btn_prev
             // 
@@ -285,6 +271,15 @@
             this.bind_source.AddingNew += new System.ComponentModel.AddingNewEventHandler(this.bind_source_AddingNew);
             this.bind_source.CurrentChanged += new System.EventHandler(this.bind_source_CurrentChanged);
             // 
+            // tb_page_size
+            // 
+            this.tb_page_size.Name = "tb_page_size";
+            this.tb_page_size.ReadOnly = true;
+            this.tb_page_size.Size = new System.Drawing.Size(100, 25);
+            this.tb_page_size.Text = "10";
+            this.tb_page_size.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.tb_page_size_KeyPress);
+            this.tb_page_size.TextChanged += new System.EventHandler(this.tb_page_size_TextChanged);
+            // 
             // Overstorapp
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -322,12 +317,12 @@
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator3;
         private System.Windows.Forms.ToolStripButton btn_first;
         private System.Windows.Forms.BindingNavigator bind_nav;
-        private System.Windows.Forms.ToolStripComboBox cmb_page_size;
         private System.Windows.Forms.ToolStripButton btn_prev;
         private System.Windows.Forms.ToolStripLabel lb_pages;
         private System.Windows.Forms.ToolStripButton btn_next;
         private System.Windows.Forms.ToolStripButton btn_last;
         private System.Windows.Forms.ToolStripLabel lb_pgsize;
+        private System.Windows.Forms.ToolStripTextBox tb_page_size;
     }
 }
 

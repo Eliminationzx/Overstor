@@ -29,7 +29,7 @@ namespace Overstor
         private void InitializeExtentions()
         {
             db = new DataBase();
-            page_size = Convert.ToInt32(cmb_page_size.Text);
+            page_size = Convert.ToInt32(tb_page_size.Text);
             current_page_index = 1;
             total_pages = 0;
             dataView.EditMode = DataGridViewEditMode.EditProgrammatically;
@@ -42,7 +42,7 @@ namespace Overstor
 
         private void CalculateTotalPages()
         {
-            total_pages = Convert.ToInt32(Math.Ceiling(bind_source.Count * 1.0 / page_size));
+            total_pages = (int)Math.Ceiling((double)bind_source.Count / page_size);
         }
 
         public void SearchTagListInit()
@@ -224,7 +224,7 @@ namespace Overstor
         {
             btn_prev.Enabled = btn_first.Enabled = current_page_index != 1;
             btn_next.Enabled = btn_last.Enabled = current_page_index != total_pages;
-            lb_pages.Text = "Page " + current_page_index + " / " + total_pages;
+            lb_pages.Text = "Page " + current_page_index.ToString() + " / " + total_pages.ToString();
         }
 
         private void btn_last_Click(object sender, EventArgs e)
@@ -241,21 +241,13 @@ namespace Overstor
             btn_search.Enabled = db.Tables[0] != null;
             btn_refresh.Enabled = db.Tables[0] != null;
             btn_search.Enabled = db.Tables[0] != null;
-            cmb_page_size.Enabled = db.Tables[0] != null;
+            tb_page_size.ReadOnly = db.Tables[0] == null;
         }
 
         private void bind_source_CurrentChanged(object sender, EventArgs e)
         {
             CalculateTotalPages();
             RefreshPagination();
-        }
-
-        private void cmb_page_size_TextChanged(object sender, EventArgs e)
-        {
-            page_size = Convert.ToInt32(cmb_page_size.Text);
-            RefreshPagination();
-            CalculateTotalPages();
-            BindPageToGrid();
         }
 
         private void bind_source_AddingNew(object sender, AddingNewEventArgs e)
@@ -273,6 +265,32 @@ namespace Overstor
             if (trigger == null)
                 return;
             trigger.Start();
+        }
+
+        private void tb_page_size_TextChanged(object sender, EventArgs e)
+        {
+            if (String.IsNullOrWhiteSpace(tb_page_size.Text))
+                tb_page_size.Text = "10";
+            
+            page_size = Convert.ToInt32(tb_page_size.Text);
+            RefreshPagination();
+            CalculateTotalPages();
+            BindPageToGrid();
+        }
+
+        private void tb_page_size_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            if (!char.IsControl(e.KeyChar) && !char.IsDigit(e.KeyChar) &&
+            (e.KeyChar != '.'))
+            {
+                e.Handled = true;
+            }
+
+            // only allow one decimal point
+            if ((e.KeyChar == '.') && ((sender as TextBox).Text.IndexOf('.') > -1))
+            {
+                e.Handled = true;
+            }
         }
     }
 }
