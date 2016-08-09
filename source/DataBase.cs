@@ -19,6 +19,7 @@ namespace Overstor
             {
                 FileStream fs = new FileStream(path, FileMode.Open, FileAccess.ReadWrite);
                 XmlTextReader xml_read = new XmlTextReader(fs);
+                Tables.Clear();
                 ReadXml(xml_read, XmlReadMode.InferSchema);
                 fs.Close();
                 return true;
@@ -59,8 +60,6 @@ namespace Overstor
                     data_table.Columns[i].ColumnName = cols_name[i];
                 }
 
-                // Add one row by default
-                data_table.Rows.Add();
                 Tables.Clear();
                 Tables.Add(data_table);
             }

@@ -1,12 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Data;
-using System.Data.OleDb;
-using System.Drawing;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.ComponentModel;
 using System.Windows.Forms;
 using System.Diagnostics;
 
@@ -17,6 +13,9 @@ namespace Overstor
     {
         private Process trigger;
         private DataBase db;
+        private int page_size;
+        private int current_page_index;
+        private int total_pages;
         
         public Overstorapp()
         {
@@ -27,7 +26,30 @@ namespace Overstor
         private void InitializeExtentions()
         {
             db = new DataBase();
+            page_size = Convert.ToInt32(cmb_page_size.Text);
+            current_page_index = 1;
+            total_pages = 0;
+            dataView.EditMode = DataGridViewEditMode.EditProgrammatically;
+        }
 
+        private void CalculateTotalPages()
+        {
+            total_pages = Convert.ToInt32(Math.Ceiling(bind_source.Count * 1.0 / page_size));
+        }
+
+        private void BindPageToGrid()
+        {
+            int start_index = (current_page_index - 1) * page_size;
+            BindingSource tmp_bind = new BindingSource();
+            for (int i = start_index; i < start_index + page_size; i++)
+            {
+                if (i >= bind_source.Count)
+                    break;
+
+                tmp_bind.Add(bind_source[i]);
+            }
+
+            dataView.DataSource = tmp_bind;
         }
 
         private void btn_imp_Click(object sender, EventArgs e)
@@ -45,12 +67,17 @@ namespace Overstor
                         return;
                     }
 
-                    bindingSource.DataMember = db.Tables[0].ToString();
-                    bindingSource.DataSource = db.Tables[0];
+                    // Cleanup before adding new
+                    dataView.DataSource = null;
+                    bind_source.DataSource = null;
+                    bind_source.Clear();
 
-                    bindingNavigator1.BindingSource = bindingSource;
-                    dataView.DataSource = bindingSource;
-                    dataView.EditMode = DataGridViewEditMode.EditOnEnter;
+                    bind_source.DataMember = db.Tables[0].ToString();
+                    bind_source.DataSource = db.Tables[0];
+
+                    bind_nav.BindingSource = bind_source;
+
+                    BindPageToGrid();
                 }
             }
         }
@@ -74,19 +101,7 @@ namespace Overstor
 
         private void btn_refresh_Click(object sender, EventArgs e)
         {
-            bindingSource.DataSource = db.Tables[0];
-            bindingNavigator1.BindingSource = bindingSource;
-            dataView.DataSource = bindingSource;
-            dataView.EditMode = DataGridViewEditMode.EditOnEnter;
-        }
-
-        private void dataView_DataSourceChanged(object sender, EventArgs e)
-        {
-            // Enable or disable some functionals
-            btn_save.Enabled = db.Tables != null;
-            btn_search.Enabled = db.Tables != null;
-            btn_refresh.Enabled = db.Tables != null;
-            btn_search.Enabled = db.Tables != null;
+            BindPageToGrid();
         }
 
         private void btn_search_Click(object sender, EventArgs e)
@@ -101,10 +116,9 @@ namespace Overstor
             string text = tb_search.Text;
 
             dv.RowFilter = cmb_tag.SelectedItem.ToString() + "='" + text + "'";
-            bindingSource.DataSource = dv;
-            bindingNavigator1.BindingSource = bindingSource;
-            dataView.DataSource = bindingSource;
-            dataView.EditMode = DataGridViewEditMode.EditProgrammatically;
+            bind_source.DataSource = dv;
+
+            BindPageToGrid();
         }
 
         private void dataView_ColumnAdded(object sender, DataGridViewColumnEventArgs e)
@@ -123,7 +137,7 @@ namespace Overstor
             cmb_tag.SelectedIndex = 0;
         }
 
-        private void create_table(string table_name, ListBox list)
+        private void TableCreate(string table_name, ListBox list)
         {
             if (String.IsNullOrWhiteSpace(table_name) || list.Items == null)
             {
@@ -137,17 +151,17 @@ namespace Overstor
 
             db.CreateDB(table_name, cols_name);
 
-            BindingSource bindingSource_new = new BindingSource();
+            // Cleanup before adding new
+            dataView.DataSource = null;
+            bind_source.DataSource = null;
+            bind_source.Clear();
 
-            bindingSource_new.DataMember = db.Tables[0].ToString();
-            bindingSource_new.DataSource = db.Tables[0];
+            bind_source.DataMember = db.Tables[0].ToString();
+            bind_source.DataSource = db.Tables[0];
 
-            bindingSource = bindingSource_new;
+            bind_nav.BindingSource = bind_source;
 
-            bindingNavigator1.BindingSource = bindingSource;
-
-            dataView.DataSource = bindingSource;
-            dataView.EditMode = DataGridViewEditMode.EditOnEnter;
+            BindPageToGrid();
         }
 
         private void btn_new_Click(object sender, EventArgs e)
@@ -156,7 +170,7 @@ namespace Overstor
             {
                 if (cdb.ShowDialog() == DialogResult.OK)
                 {
-                    create_table(cdb.table_name, cdb.list);
+                    TableCreate(cdb.table_name, cdb.list);
                 }
             }
         }
@@ -167,12 +181,12 @@ namespace Overstor
             {
                 if (settings.ShowDialog() == DialogResult.OK)
                 {
-                    init_trigger(settings.trigger_path);
+                    TriggerInit(settings.trigger_path);
                 }
             }
         }
 
-        private void init_trigger(string path)
+        private void TriggerInit(string path)
         {
             if (String.IsNullOrWhiteSpace(path))
             {
@@ -197,15 +211,73 @@ namespace Overstor
 
         private void dataView_RowsAdded(object sender, DataGridViewRowsAddedEventArgs e)
         {
-            try
-            {
-                Console.WriteLine("{0} is active: {1}", trigger.Id, !trigger.HasExited);
-                trigger.StandardInput.WriteLine("New event");
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.Message);
-            }
+            //if (!trigger.HasExited)
+            //    trigger.StandardInput.WriteLine("New event");
+        }
+
+        private void btn_first_Click(object sender, EventArgs e)
+        {
+            current_page_index = 1;
+            BindPageToGrid();
+            RefreshPagination();
+        }
+
+        private void btn_prev_Click(object sender, EventArgs e)
+        {
+           current_page_index--;
+
+           if (current_page_index < 1)
+               current_page_index = 1;
+
+           BindPageToGrid();
+           RefreshPagination();
+        }
+
+        private void btn_next_Click(object sender, EventArgs e)
+        {
+             current_page_index++;
+
+             if (current_page_index > total_pages)
+                 current_page_index = total_pages;
+
+             BindPageToGrid();
+             RefreshPagination();
+        }
+
+        private void RefreshPagination()
+        {
+            btn_prev.Enabled = btn_first.Enabled = current_page_index != 1;
+            btn_next.Enabled = btn_last.Enabled = current_page_index != total_pages;
+            lb_pages.Text = "Page " + current_page_index + " / " + total_pages;
+        }
+
+        private void btn_last_Click(object sender, EventArgs e)
+        {
+            current_page_index = total_pages;
+            BindPageToGrid();
+            RefreshPagination();
+        }
+
+        private void cmb_page_size_SelectedValueChanged(object sender, EventArgs e)
+        {
+            page_size = Convert.ToInt32(cmb_page_size.Text);
+            RefreshPagination();
+            CalculateTotalPages();
+            BindPageToGrid();
+        }
+
+        private void dataView_DataBindingComplete(object sender, DataGridViewBindingCompleteEventArgs e)
+        {
+            btn_save.Enabled = db.Tables[0] != null;
+            btn_search.Enabled = db.Tables[0] != null;
+            btn_refresh.Enabled = db.Tables[0] != null;
+            btn_search.Enabled = db.Tables[0] != null;
+        }
+
+        private void bind_source_CurrentChanged(object sender, EventArgs e)
+        {
+            CalculateTotalPages();
+            RefreshPagination();
         }
     }
 }

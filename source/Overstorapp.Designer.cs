@@ -31,7 +31,7 @@
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Overstorapp));
             this.dataView = new System.Windows.Forms.DataGridView();
-            this.bindingNavigator1 = new System.Windows.Forms.BindingNavigator(this.components);
+            this.bind_nav = new System.Windows.Forms.BindingNavigator(this.components);
             this.bindingNavigatorAddNewItem = new System.Windows.Forms.ToolStripButton();
             this.bindingNavigatorCountItem = new System.Windows.Forms.ToolStripLabel();
             this.bindingNavigatorDeleteItem = new System.Windows.Forms.ToolStripButton();
@@ -53,11 +53,18 @@
             this.cmb_tag = new System.Windows.Forms.ToolStripComboBox();
             this.btn_search = new System.Windows.Forms.ToolStripButton();
             this.tb_search = new System.Windows.Forms.TextBox();
-            this.bindingSource = new System.Windows.Forms.BindingSource(this.components);
+            this.bind_source = new System.Windows.Forms.BindingSource(this.components);
+            this.btn_first = new System.Windows.Forms.Button();
+            this.btn_prev = new System.Windows.Forms.Button();
+            this.btn_next = new System.Windows.Forms.Button();
+            this.btn_last = new System.Windows.Forms.Button();
+            this.lb_pages = new System.Windows.Forms.Label();
+            this.cmb_page_size = new System.Windows.Forms.ComboBox();
+            this.lb_page_size = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.dataView)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.bindingNavigator1)).BeginInit();
-            this.bindingNavigator1.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.bindingSource)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.bind_nav)).BeginInit();
+            this.bind_nav.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.bind_source)).BeginInit();
             this.SuspendLayout();
             // 
             // dataView
@@ -72,18 +79,18 @@
             this.dataView.Location = new System.Drawing.Point(12, 55);
             this.dataView.Name = "dataView";
             this.dataView.RightToLeft = System.Windows.Forms.RightToLeft.No;
-            this.dataView.Size = new System.Drawing.Size(542, 284);
+            this.dataView.Size = new System.Drawing.Size(777, 414);
             this.dataView.TabIndex = 0;
-            this.dataView.DataSourceChanged += new System.EventHandler(this.dataView_DataSourceChanged);
             this.dataView.ColumnAdded += new System.Windows.Forms.DataGridViewColumnEventHandler(this.dataView_ColumnAdded);
+            this.dataView.DataBindingComplete += new System.Windows.Forms.DataGridViewBindingCompleteEventHandler(this.dataView_DataBindingComplete);
             this.dataView.RowsAdded += new System.Windows.Forms.DataGridViewRowsAddedEventHandler(this.dataView_RowsAdded);
             // 
-            // bindingNavigator1
+            // bind_nav
             // 
-            this.bindingNavigator1.AddNewItem = this.bindingNavigatorAddNewItem;
-            this.bindingNavigator1.CountItem = this.bindingNavigatorCountItem;
-            this.bindingNavigator1.DeleteItem = this.bindingNavigatorDeleteItem;
-            this.bindingNavigator1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.bind_nav.AddNewItem = this.bindingNavigatorAddNewItem;
+            this.bind_nav.CountItem = this.bindingNavigatorCountItem;
+            this.bind_nav.DeleteItem = this.bindingNavigatorDeleteItem;
+            this.bind_nav.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.btn_create,
             this.btn_save,
             this.btn_ins,
@@ -104,16 +111,16 @@
             this.toolStripSeparator1,
             this.cmb_tag,
             this.btn_search});
-            this.bindingNavigator1.Location = new System.Drawing.Point(0, 0);
-            this.bindingNavigator1.MoveFirstItem = this.bindingNavigatorMoveFirstItem;
-            this.bindingNavigator1.MoveLastItem = this.bindingNavigatorMoveLastItem;
-            this.bindingNavigator1.MoveNextItem = this.bindingNavigatorMoveNextItem;
-            this.bindingNavigator1.MovePreviousItem = this.bindingNavigatorMovePreviousItem;
-            this.bindingNavigator1.Name = "bindingNavigator1";
-            this.bindingNavigator1.PositionItem = this.bindingNavigatorPositionItem;
-            this.bindingNavigator1.Size = new System.Drawing.Size(566, 25);
-            this.bindingNavigator1.TabIndex = 1;
-            this.bindingNavigator1.Text = "bindingNavigator1";
+            this.bind_nav.Location = new System.Drawing.Point(0, 0);
+            this.bind_nav.MoveFirstItem = this.bindingNavigatorMoveFirstItem;
+            this.bind_nav.MoveLastItem = this.bindingNavigatorMoveLastItem;
+            this.bind_nav.MoveNextItem = this.bindingNavigatorMoveNextItem;
+            this.bind_nav.MovePreviousItem = this.bindingNavigatorMovePreviousItem;
+            this.bind_nav.Name = "bind_nav";
+            this.bind_nav.PositionItem = this.bindingNavigatorPositionItem;
+            this.bind_nav.Size = new System.Drawing.Size(801, 25);
+            this.bind_nav.TabIndex = 1;
+            this.bind_nav.Text = "bindingNavigator1";
             // 
             // bindingNavigatorAddNewItem
             // 
@@ -287,25 +294,111 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.tb_search.Location = new System.Drawing.Point(12, 29);
             this.tb_search.Name = "tb_search";
-            this.tb_search.Size = new System.Drawing.Size(542, 20);
+            this.tb_search.Size = new System.Drawing.Size(777, 20);
             this.tb_search.TabIndex = 2;
+            // 
+            // bind_source
+            // 
+            this.bind_source.CurrentChanged += new System.EventHandler(this.bind_source_CurrentChanged);
+            // 
+            // btn_first
+            // 
+            this.btn_first.Location = new System.Drawing.Point(403, 475);
+            this.btn_first.Name = "btn_first";
+            this.btn_first.Size = new System.Drawing.Size(74, 20);
+            this.btn_first.TabIndex = 3;
+            this.btn_first.Text = "First";
+            this.btn_first.UseVisualStyleBackColor = true;
+            this.btn_first.Click += new System.EventHandler(this.btn_first_Click);
+            // 
+            // btn_prev
+            // 
+            this.btn_prev.Location = new System.Drawing.Point(483, 475);
+            this.btn_prev.Name = "btn_prev";
+            this.btn_prev.Size = new System.Drawing.Size(74, 20);
+            this.btn_prev.TabIndex = 4;
+            this.btn_prev.Text = "Previous";
+            this.btn_prev.UseVisualStyleBackColor = true;
+            this.btn_prev.Click += new System.EventHandler(this.btn_prev_Click);
+            // 
+            // btn_next
+            // 
+            this.btn_next.Location = new System.Drawing.Point(635, 475);
+            this.btn_next.Name = "btn_next";
+            this.btn_next.Size = new System.Drawing.Size(74, 20);
+            this.btn_next.TabIndex = 5;
+            this.btn_next.Text = "Next";
+            this.btn_next.UseVisualStyleBackColor = true;
+            this.btn_next.Click += new System.EventHandler(this.btn_next_Click);
+            // 
+            // btn_last
+            // 
+            this.btn_last.Location = new System.Drawing.Point(715, 475);
+            this.btn_last.Name = "btn_last";
+            this.btn_last.Size = new System.Drawing.Size(74, 20);
+            this.btn_last.TabIndex = 6;
+            this.btn_last.Text = "Last";
+            this.btn_last.UseVisualStyleBackColor = true;
+            this.btn_last.Click += new System.EventHandler(this.btn_last_Click);
+            // 
+            // lb_pages
+            // 
+            this.lb_pages.AutoSize = true;
+            this.lb_pages.Location = new System.Drawing.Point(563, 479);
+            this.lb_pages.Name = "lb_pages";
+            this.lb_pages.Size = new System.Drawing.Size(37, 13);
+            this.lb_pages.TabIndex = 7;
+            this.lb_pages.Text = "Pages";
+            // 
+            // cmb_page_size
+            // 
+            this.cmb_page_size.FormattingEnabled = true;
+            this.cmb_page_size.Items.AddRange(new object[] {
+            "5",
+            "10",
+            "100",
+            "25",
+            "50"});
+            this.cmb_page_size.Location = new System.Drawing.Point(335, 475);
+            this.cmb_page_size.Name = "cmb_page_size";
+            this.cmb_page_size.Size = new System.Drawing.Size(62, 21);
+            this.cmb_page_size.TabIndex = 8;
+            this.cmb_page_size.Text = "10";
+            this.cmb_page_size.SelectedValueChanged += new System.EventHandler(this.cmb_page_size_SelectedValueChanged);
+            // 
+            // lb_page_size
+            // 
+            this.lb_page_size.AutoSize = true;
+            this.lb_page_size.Location = new System.Drawing.Point(273, 478);
+            this.lb_page_size.Name = "lb_page_size";
+            this.lb_page_size.Size = new System.Drawing.Size(56, 13);
+            this.lb_page_size.TabIndex = 9;
+            this.lb_page_size.Text = "Page size:";
             // 
             // Overstorapp
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(566, 344);
+            this.ClientSize = new System.Drawing.Size(801, 507);
+            this.Controls.Add(this.lb_page_size);
+            this.Controls.Add(this.cmb_page_size);
+            this.Controls.Add(this.lb_pages);
+            this.Controls.Add(this.btn_last);
+            this.Controls.Add(this.btn_next);
+            this.Controls.Add(this.btn_prev);
+            this.Controls.Add(this.btn_first);
             this.Controls.Add(this.tb_search);
             this.Controls.Add(this.dataView);
-            this.Controls.Add(this.bindingNavigator1);
+            this.Controls.Add(this.bind_nav);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "Overstorapp";
             this.Text = "Overstor";
             ((System.ComponentModel.ISupportInitialize)(this.dataView)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.bindingNavigator1)).EndInit();
-            this.bindingNavigator1.ResumeLayout(false);
-            this.bindingNavigator1.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.bindingSource)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.bind_nav)).EndInit();
+            this.bind_nav.ResumeLayout(false);
+            this.bind_nav.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.bind_source)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -314,7 +407,7 @@
         #endregion
 
         private System.Windows.Forms.DataGridView dataView;
-        private System.Windows.Forms.BindingNavigator bindingNavigator1;
+        private System.Windows.Forms.BindingNavigator bind_nav;
         private System.Windows.Forms.ToolStripButton bindingNavigatorAddNewItem;
         private System.Windows.Forms.ToolStripLabel bindingNavigatorCountItem;
         private System.Windows.Forms.ToolStripButton bindingNavigatorDeleteItem;
@@ -326,7 +419,7 @@
         private System.Windows.Forms.ToolStripButton bindingNavigatorMoveNextItem;
         private System.Windows.Forms.ToolStripButton bindingNavigatorMoveLastItem;
         private System.Windows.Forms.ToolStripSeparator bindingNavigatorSeparator2;
-        private System.Windows.Forms.BindingSource bindingSource;
+        private System.Windows.Forms.BindingSource bind_source;
         private System.Windows.Forms.ToolStripButton btn_ins;
         private System.Windows.Forms.ToolStripButton btn_save;
         private System.Windows.Forms.ToolStripButton btn_refresh;
@@ -337,6 +430,13 @@
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
         private System.Windows.Forms.ToolStripButton btn_create;
         private System.Windows.Forms.ToolStripButton btn_settings;
+        private System.Windows.Forms.Button btn_first;
+        private System.Windows.Forms.Button btn_prev;
+        private System.Windows.Forms.Button btn_next;
+        private System.Windows.Forms.Button btn_last;
+        private System.Windows.Forms.Label lb_pages;
+        private System.Windows.Forms.ComboBox cmb_page_size;
+        private System.Windows.Forms.Label lb_page_size;
     }
 }
 

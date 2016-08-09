@@ -31,10 +31,10 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(CreatedbDialog));
             this.cols_del = new System.Windows.Forms.Button();
             this.cols_add = new System.Windows.Forms.Button();
-            this.label2 = new System.Windows.Forms.Label();
+            this.lb_column_name = new System.Windows.Forms.Label();
             this.tb_cols_name = new System.Windows.Forms.TextBox();
             this.cols_list = new System.Windows.Forms.ListBox();
-            this.label1 = new System.Windows.Forms.Label();
+            this.lb_table_name = new System.Windows.Forms.Label();
             this.tb_table_name = new System.Windows.Forms.TextBox();
             this.btn_accept = new System.Windows.Forms.Button();
             this.btn_cancel = new System.Windows.Forms.Button();
@@ -64,14 +64,14 @@
             this.cols_add.UseVisualStyleBackColor = true;
             this.cols_add.Click += new System.EventHandler(this.cols_add_Click);
             // 
-            // label2
+            // lb_column_name
             // 
-            this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(2, 52);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(74, 13);
-            this.label2.TabIndex = 13;
-            this.label2.Text = "Column name:";
+            this.lb_column_name.AutoSize = true;
+            this.lb_column_name.Location = new System.Drawing.Point(2, 52);
+            this.lb_column_name.Name = "lb_column_name";
+            this.lb_column_name.Size = new System.Drawing.Size(74, 13);
+            this.lb_column_name.TabIndex = 13;
+            this.lb_column_name.Text = "Column name:";
             // 
             // tb_cols_name
             // 
@@ -89,14 +89,14 @@
             this.cols_list.Size = new System.Drawing.Size(339, 43);
             this.cols_list.TabIndex = 11;
             // 
-            // label1
+            // lb_table_name
             // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(3, 15);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(38, 13);
-            this.label1.TabIndex = 10;
-            this.label1.Text = "Name:";
+            this.lb_table_name.AutoSize = true;
+            this.lb_table_name.Location = new System.Drawing.Point(3, 15);
+            this.lb_table_name.Name = "lb_table_name";
+            this.lb_table_name.Size = new System.Drawing.Size(38, 13);
+            this.lb_table_name.TabIndex = 10;
+            this.lb_table_name.Text = "Name:";
             // 
             // tb_table_name
             // 
@@ -134,10 +134,10 @@
             this.Controls.Add(this.btn_accept);
             this.Controls.Add(this.cols_del);
             this.Controls.Add(this.cols_add);
-            this.Controls.Add(this.label2);
+            this.Controls.Add(this.lb_column_name);
             this.Controls.Add(this.tb_cols_name);
             this.Controls.Add(this.cols_list);
-            this.Controls.Add(this.label1);
+            this.Controls.Add(this.lb_table_name);
             this.Controls.Add(this.tb_table_name);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "CreatedbDialog";
@@ -151,10 +151,10 @@
 
         private System.Windows.Forms.Button cols_del;
         private System.Windows.Forms.Button cols_add;
-        private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.Label lb_column_name;
         private System.Windows.Forms.TextBox tb_cols_name;
         private System.Windows.Forms.ListBox cols_list;
-        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Label lb_table_name;
         private System.Windows.Forms.TextBox tb_table_name;
         private System.Windows.Forms.Button btn_accept;
         private System.Windows.Forms.Button btn_cancel;
