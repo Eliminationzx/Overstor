@@ -13,11 +13,9 @@ namespace Overstor
     {
         private Process trigger;
         private DataBase db;
-        private int page_size;
         private int current_page_index;
         private int total_pages;
         private SearchDialog sdiag;
-        private CreatedbDialog cdb;
         private SettingsDialog settings;
         
         public Overstorapp()
@@ -29,19 +27,16 @@ namespace Overstor
         private void InitializeExtentions()
         {
             db = new DataBase();
-            page_size = Convert.ToInt32(tb_page_size.Text);
+            sdiag = new SearchDialog();
+            settings = new SettingsDialog();
+
             current_page_index = 1;
             total_pages = 0;
-            dataView.EditMode = DataGridViewEditMode.EditProgrammatically;
-
-            // Init other forms
-            sdiag = new SearchDialog();
-            cdb = new CreatedbDialog();
-            settings = new SettingsDialog();
         }
 
         private void CalculateTotalPages()
         {
+            int page_size = Convert.ToInt32(cmb_pagesize.Text);
             total_pages = (int)Math.Ceiling((double)bind_source.Count / page_size);
         }
 
@@ -52,8 +47,6 @@ namespace Overstor
 
             for (int i = 0; i < dataView.ColumnCount; i++)
             {
-                // Set column auto size mode
-                dataView.Columns[i].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
                 sdiag.tag_list.Items.Add(dataView.Columns[i].Name);
             }
 
@@ -61,19 +54,45 @@ namespace Overstor
             sdiag.tag_list.SelectedIndex = 0;
         }
 
+        private void BindSourceToNav()
+        {
+            // Cleanup before adding new
+            dataView.DataSource = null;
+            bind_source.DataSource = null;
+            bind_source.Clear();
+
+            bind_source.DataMember = db.Tables[0].ToString();
+            bind_source.DataSource = db.Tables[0];
+            bind_nav.BindingSource = bind_source;
+        }
+
         private void BindPageToGrid()
         {
-            int start_index = (current_page_index - 1) * page_size;
-            BindingSource tmp_bind = new BindingSource();
-            for (int i = start_index; i < start_index + page_size; i++)
+            try
             {
-                if (i >= bind_source.Count)
-                    break;
+                int page_size = Convert.ToInt32(cmb_pagesize.Text);
+                int start_index = (current_page_index - 1) * page_size;
+                BindingSource tmp_bind = new BindingSource();
 
-                tmp_bind.Add(bind_source[i]);
+                for (int i = start_index; i < start_index + page_size; i++)
+                {
+                    if (i >= bind_source.Count)
+                        break;
+
+                    tmp_bind.Add(bind_source[i]);
+                }
+
+                dataView.DataSource = tmp_bind;
+
+                // Refresh pagination
+                btn_prev.Enabled = btn_first.Enabled = current_page_index != 1;
+                btn_next.Enabled = btn_last.Enabled = current_page_index != total_pages;
+                lb_pages.Text = "Page " + current_page_index.ToString() + " / " + total_pages.ToString();
             }
-
-            dataView.DataSource = tmp_bind;
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+            }
         }
 
         private void btn_imp_Click(object sender, EventArgs e)
@@ -91,17 +110,7 @@ namespace Overstor
                         return;
                     }
 
-                    // Cleanup before adding new
-                    dataView.DataSource = null;
-                    bind_source.DataSource = null;
-                    bind_source.Clear();
-
-                    bind_source.DataMember = db.Tables[0].ToString();
-                    bind_source.DataSource = db.Tables[0];
-
-                    bind_nav.BindingSource = bind_source;
-
-                    BindPageToGrid();
+                    BindSourceToNav();
                 }
             }
         }
@@ -146,26 +155,17 @@ namespace Overstor
                 cols_name.Add(list.Items[i].ToString());
 
             db.CreateDB(table_name, cols_name);
-
-            // Cleanup before adding new
-            dataView.DataSource = null;
-            bind_source.DataSource = null;
-            bind_source.Clear();
-
-            bind_source.DataMember = db.Tables[0].ToString();
-            bind_source.DataSource = db.Tables[0];
-
-            bind_nav.BindingSource = bind_source;
-
-            BindPageToGrid();
+            BindSourceToNav();
         }
 
         private void btn_new_Click(object sender, EventArgs e)
         {
+            CreatedbDialog cdb = new CreatedbDialog();
             if (cdb.ShowDialog() == DialogResult.OK)
             {
                 TableCreate(cdb.table_name, cdb.list);
             }
+            cdb.Dispose();
         }
 
         private void btn_settings_Click(object sender, EventArgs e)
@@ -195,7 +195,6 @@ namespace Overstor
         {
             current_page_index = 1;
             BindPageToGrid();
-            RefreshPagination();
         }
 
         private void btn_prev_Click(object sender, EventArgs e)
@@ -206,7 +205,6 @@ namespace Overstor
                current_page_index = 1;
 
            BindPageToGrid();
-           RefreshPagination();
         }
 
         private void btn_next_Click(object sender, EventArgs e)
@@ -217,21 +215,12 @@ namespace Overstor
                  current_page_index = total_pages;
 
              BindPageToGrid();
-             RefreshPagination();
-        }
-
-        private void RefreshPagination()
-        {
-            btn_prev.Enabled = btn_first.Enabled = current_page_index != 1;
-            btn_next.Enabled = btn_last.Enabled = current_page_index != total_pages;
-            lb_pages.Text = "Page " + current_page_index.ToString() + " / " + total_pages.ToString();
         }
 
         private void btn_last_Click(object sender, EventArgs e)
         {
             current_page_index = total_pages;
             BindPageToGrid();
-            RefreshPagination();
         }
 
         private void dataView_DataBindingComplete(object sender, DataGridViewBindingCompleteEventArgs e)
@@ -241,17 +230,12 @@ namespace Overstor
             btn_search.Enabled = db.Tables[0] != null;
             btn_refresh.Enabled = db.Tables[0] != null;
             btn_search.Enabled = db.Tables[0] != null;
-            tb_page_size.ReadOnly = db.Tables[0] == null;
+            cmb_pagesize.Enabled = db.Tables[0] != null;
         }
 
         private void bind_source_CurrentChanged(object sender, EventArgs e)
         {
             CalculateTotalPages();
-            RefreshPagination();
-        }
-
-        private void bind_source_AddingNew(object sender, AddingNewEventArgs e)
-        {
             BindPageToGrid();
         }
 
@@ -267,30 +251,10 @@ namespace Overstor
             trigger.Start();
         }
 
-        private void tb_page_size_TextChanged(object sender, EventArgs e)
+        private void cmb_pagesize_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (String.IsNullOrWhiteSpace(tb_page_size.Text))
-                tb_page_size.Text = "10";
-            
-            page_size = Convert.ToInt32(tb_page_size.Text);
-            RefreshPagination();
             CalculateTotalPages();
             BindPageToGrid();
-        }
-
-        private void tb_page_size_KeyPress(object sender, KeyPressEventArgs e)
-        {
-            if (!char.IsControl(e.KeyChar) && !char.IsDigit(e.KeyChar) &&
-            (e.KeyChar != '.'))
-            {
-                e.Handled = true;
-            }
-
-            // only allow one decimal point
-            if ((e.KeyChar == '.') && ((sender as TextBox).Text.IndexOf('.') > -1))
-            {
-                e.Handled = true;
-            }
         }
     }
 }

@@ -45,12 +45,12 @@
             this.btn_first = new System.Windows.Forms.ToolStripButton();
             this.bind_nav = new System.Windows.Forms.BindingNavigator(this.components);
             this.lb_pgsize = new System.Windows.Forms.ToolStripLabel();
+            this.cmb_pagesize = new System.Windows.Forms.ToolStripComboBox();
             this.btn_prev = new System.Windows.Forms.ToolStripButton();
             this.lb_pages = new System.Windows.Forms.ToolStripLabel();
             this.btn_next = new System.Windows.Forms.ToolStripButton();
             this.btn_last = new System.Windows.Forms.ToolStripButton();
             this.bind_source = new System.Windows.Forms.BindingSource(this.components);
-            this.tb_page_size = new System.Windows.Forms.ToolStripTextBox();
             ((System.ComponentModel.ISupportInitialize)(this.dataView)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.bind_nav)).BeginInit();
             this.bind_nav.SuspendLayout();
@@ -63,6 +63,7 @@
             this.dataView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.dataView.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
             this.dataView.BackgroundColor = System.Drawing.SystemColors.Control;
             this.dataView.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.dataView.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
@@ -203,7 +204,7 @@
             this.btn_search,
             this.toolStripSeparator3,
             this.lb_pgsize,
-            this.tb_page_size,
+            this.cmb_pagesize,
             this.btn_first,
             this.btn_prev,
             this.lb_pages,
@@ -226,6 +227,20 @@
             this.lb_pgsize.Name = "lb_pgsize";
             this.lb_pgsize.Size = new System.Drawing.Size(58, 22);
             this.lb_pgsize.Text = "Page size:";
+            // 
+            // cmb_pagesize
+            // 
+            this.cmb_pagesize.Enabled = false;
+            this.cmb_pagesize.Items.AddRange(new object[] {
+            "5",
+            "10",
+            "25",
+            "50",
+            "100"});
+            this.cmb_pagesize.Name = "cmb_pagesize";
+            this.cmb_pagesize.Size = new System.Drawing.Size(121, 25);
+            this.cmb_pagesize.Text = "5";
+            this.cmb_pagesize.SelectedIndexChanged += new System.EventHandler(this.cmb_pagesize_SelectedIndexChanged);
             // 
             // btn_prev
             // 
@@ -268,17 +283,7 @@
             // 
             // bind_source
             // 
-            this.bind_source.AddingNew += new System.ComponentModel.AddingNewEventHandler(this.bind_source_AddingNew);
             this.bind_source.CurrentChanged += new System.EventHandler(this.bind_source_CurrentChanged);
-            // 
-            // tb_page_size
-            // 
-            this.tb_page_size.Name = "tb_page_size";
-            this.tb_page_size.ReadOnly = true;
-            this.tb_page_size.Size = new System.Drawing.Size(100, 25);
-            this.tb_page_size.Text = "10";
-            this.tb_page_size.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.tb_page_size_KeyPress);
-            this.tb_page_size.TextChanged += new System.EventHandler(this.tb_page_size_TextChanged);
             // 
             // Overstorapp
             // 
@@ -322,7 +327,7 @@
         private System.Windows.Forms.ToolStripButton btn_next;
         private System.Windows.Forms.ToolStripButton btn_last;
         private System.Windows.Forms.ToolStripLabel lb_pgsize;
-        private System.Windows.Forms.ToolStripTextBox tb_page_size;
+        private System.Windows.Forms.ToolStripComboBox cmb_pagesize;
     }
 }
 
