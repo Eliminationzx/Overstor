@@ -84,10 +84,7 @@ namespace Overstor
 
                 dataView.DataSource = tmp_bind;
 
-                // Refresh pagination
-                btn_prev.Enabled = btn_first.Enabled = current_page_index != 1;
-                btn_next.Enabled = btn_last.Enabled = current_page_index != total_pages;
-                lb_pages.Text = "Page " + current_page_index.ToString() + " / " + total_pages.ToString();
+                RefreshPagination();
             }
             catch (Exception e)
             {
@@ -135,6 +132,7 @@ namespace Overstor
         private void btn_refresh_Click(object sender, EventArgs e)
         {
             BindPageToGrid();
+            RefreshPagination();
         }
 
         private void btn_search_Click(object sender, EventArgs e)
@@ -143,9 +141,38 @@ namespace Overstor
             {
                 DataView dv = new DataView(db.Tables[0]);
                 dv.RowFilter = sdiag.filter_text;
-                bind_source.DataSource = dv;
-                BindPageToGrid();
+
+                try
+                {
+                    int page_size = Convert.ToInt32(cmb_pagesize.Text);
+                    int start_index = (current_page_index - 1) * page_size;
+                    BindingSource tmp_bind = new BindingSource();
+
+                    for (int i = start_index; i < start_index + page_size; i++)
+                    {
+                        if (i >= dv.Count)
+                            break;
+
+                        tmp_bind.Add(dv[i]);
+                    }
+
+                    dataView.DataSource = tmp_bind;
+
+                    RefreshPagination();
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex.Message);
+                }
             }
+        }
+
+        private void RefreshPagination()
+        {
+            // Refresh pagination
+            btn_prev.Enabled = btn_first.Enabled = current_page_index != 1;
+            btn_next.Enabled = btn_last.Enabled = current_page_index != total_pages;
+            lb_pages.Text = "Page " + current_page_index.ToString() + " / " + total_pages.ToString();
         }
 
         private void TableCreate(string table_name, ListBox list)
@@ -237,6 +264,7 @@ namespace Overstor
         {
             CalculateTotalPages();
             BindPageToGrid();
+            RefreshPagination();
         }
 
         private void dataView_ColumnAdded(object sender, DataGridViewColumnEventArgs e)
@@ -244,17 +272,28 @@ namespace Overstor
             SearchTagListInit();
         }
 
-        private void bind_nav_ItemAdded(object sender, ToolStripItemEventArgs e)
-        {
-            if (trigger == null)
-                return;
-            trigger.Start();
-        }
-
         private void cmb_pagesize_SelectedIndexChanged(object sender, EventArgs e)
         {
             CalculateTotalPages();
             BindPageToGrid();
+        }
+
+        private void dataView_ColumnHeaderMouseDoubleClick(object sender, DataGridViewCellMouseEventArgs e)
+        {
+            using (ColChanger cch = new ColChanger())
+            {
+                if (cch.ShowDialog() == DialogResult.OK)
+                {
+                    dataView.Columns[e.ColumnIndex].HeaderCell.Value = cch.col_name;
+                }
+                cch.Dispose();
+            }
+        }
+
+        private void bind_source_AddingNew(object sender, AddingNewEventArgs e)
+        {
+            if (trigger != null)
+                trigger.Start();
         }
     }
 }

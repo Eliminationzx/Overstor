@@ -59,6 +59,7 @@
             // 
             // dataView
             // 
+            this.dataView.AllowDrop = true;
             this.dataView.AllowUserToOrderColumns = true;
             this.dataView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
@@ -74,6 +75,7 @@
             this.dataView.Size = new System.Drawing.Size(837, 467);
             this.dataView.TabIndex = 0;
             this.dataView.ColumnAdded += new System.Windows.Forms.DataGridViewColumnEventHandler(this.dataView_ColumnAdded);
+            this.dataView.ColumnHeaderMouseDoubleClick += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.dataView_ColumnHeaderMouseDoubleClick);
             this.dataView.DataBindingComplete += new System.Windows.Forms.DataGridViewBindingCompleteEventHandler(this.dataView_DataBindingComplete);
             // 
             // btn_create
@@ -220,7 +222,6 @@
             this.bind_nav.Size = new System.Drawing.Size(861, 25);
             this.bind_nav.TabIndex = 1;
             this.bind_nav.Text = "Binding navigator";
-            this.bind_nav.ItemAdded += new System.Windows.Forms.ToolStripItemEventHandler(this.bind_nav_ItemAdded);
             // 
             // lb_pgsize
             // 
@@ -283,6 +284,7 @@
             // 
             // bind_source
             // 
+            this.bind_source.AddingNew += new System.ComponentModel.AddingNewEventHandler(this.bind_source_AddingNew);
             this.bind_source.CurrentChanged += new System.EventHandler(this.bind_source_CurrentChanged);
             // 
             // Overstorapp
